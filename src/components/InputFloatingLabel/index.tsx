@@ -10,32 +10,22 @@ interface FloatingLabelInputProps extends React.InputHTMLAttributes<HTMLInputEle
 }
 
 const FloatingLabelInput = forwardRef<HTMLInputElement, FloatingLabelInputProps>(
-  ({ label,  borderColor, labelColor, focusLabelColor,  backgroundColor, value, ...props }, ref) => {
+  ({ label, borderColor, labelColor, focusLabelColor, backgroundColor, value, ...props }, ref) => {
     const [inputValue, setInputValue] = useState(value);
     const [isFilled, setIsFilled] = useState(false);
 
-    const controllValue = (val: any) => {
-      if (val === "" || val === null || val === undefined || isNaN(val)) {
-        if (typeof val === "number" && isNaN(val)) {
-          setInputValue(NaN);
-        } else if (typeof val === "boolean") {
-          // setInputValue(false);
-        }
-      }
-    };
+    useEffect(() => {
+      setIsFilled(!!value);
+      setInputValue(value); // Isso garante que o estado interno seja atualizado quando o valor prop muda
+    }, [value]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(event.target.value);
+      setIsFilled(!!event.target.value);
       if (props.onChange) {
         props.onChange(event);
       }
     };
-
-    useEffect(() => {
-      setIsFilled(!!value);
-      setInputValue(value);
-      controllValue(value);
-    }, [value]);
 
     return (
       <InputFloatingLabel
@@ -46,22 +36,17 @@ const FloatingLabelInput = forwardRef<HTMLInputElement, FloatingLabelInputProps>
       >
         <input 
           ref={ref}
-          {...props} placeholder=' '
-          onChange={(e) => {
-          if (props.onChange) {
-            props.onChange(e);
-          }
-          handleChange
-          setIsFilled(!!e.target.value);
-        }} />
+          {...props} 
+          value={inputValue || ''} // Usa o estado inputValue como o valor do input
+          placeholder=' '
+          onChange={handleChange} // Corrige a chamada da função
+        />
         {label &&
           <label className={isFilled ? 'filled' : ''}>{label}</label>
         }
       </InputFloatingLabel>
     );
-
   }
-
 )
 
 export default FloatingLabelInput;
