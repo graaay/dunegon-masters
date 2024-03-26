@@ -45,6 +45,7 @@ const FloatingLabelInput = forwardRef<HTMLInputElement, FloatingLabelInputProps>
         backgroundColor={backgroundColor}
       >
         <input 
+          ref={ref}
           {...props} placeholder=' '
           onChange={(e) => {
           if (props.onChange) {

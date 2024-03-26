@@ -2,12 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Divider, InputFloatingLabel, Modal, Select } from '../../components/index'
 import { TurnoWrapper, Button, Input, TableCombat, ColunasMenoresCombat, FloatingCombatentes } from './styles'
-import { Sword, Pencil, User, Note, Heart, Drop, Eye, List, X, PlusMinus, ArrowCounterClockwise } from "phosphor-react";
+import { Sword, Pencil, User, Note, Heart, Drop, Eye, List, X, PlusMinus, ArrowCounterClockwise, Plus, Minus } from "phosphor-react";
 import { Combatente, Combate, Mesa, Personagem, Condicao, Sistema } from '../../services/types';
 import { sistemas as Sistemas, sistemas } from '../../services/systens';
 import { fetchMesaById } from '../../services/api';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
-import { useForm, SubmitHandler, Controller } from "react-hook-form"
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { v5 as uuidv5, v4 as uuidv4 } from 'uuid';
 
 interface DisplayPersonagensProps {
     tipo: string;
@@ -17,17 +18,13 @@ interface ItemPersonagemProps {
     personagem: Personagem;
 }
 
-interface CombatenteStatusDisplayProps {
-    combatente: Combatente;
-}
-
 function Combat() {
     const navigate = useNavigate();
 
     const { mesaId } = useParams<string>();
     const [combateOrder, setCombateOrder] = useState<Array<Combatente>>([]);
     const [combatente, setCombatente] = useState<Combatente>({
-        id: 0,
+        id: '',
         iniciativa: 0,
         nome: "",
         status: [],
@@ -37,14 +34,9 @@ function Combat() {
     const [mesa, setMesa] = useState<Mesa>({} as Mesa);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [sistema, setSistema] = useState({} as Sistema);
-    const [condicao, setCondicao] = useState<Condicao>({
-        id: 0,
-        descricao: '',
-        label: '',
-        value: '',
-        rodadas: 0
-    } as Condicao);
     const [condicoesModal, setCondicoesModal] = useState<Array<Condicao>>([]);
+    const namespace = uuidv4();
+    const [selectedPlayer, setSelectedPlayer] = useState<String>('');
 
     useEffect(() => {
 
@@ -78,36 +70,13 @@ function Combat() {
 
     const openModal = (personagem: Combatente) => {
         setIsModalOpen(true);
+        setCondicoesModal(personagem.status);
+        setSelectedPlayer(personagem.id);
     };
 
     const closeModal = () => {
         setIsModalOpen(false)
     };
-
-    const formModel = useCallback((campo: string, value: any) => {
-        console.log(value);
-        if (campo === 'dropdown') {
-            setCondicao(prevState => ({
-                ...prevState,
-                id: (condicoesModal?.length > 0 ? condicoesModal.length + 1 : 1),
-                descricao: value.descricao,
-                label: value.label,
-                value: value.value
-            }));
-        } else {
-            console.log('entrou nesse')
-            setCondicao(prevState => ({
-                ...prevState,
-                [campo]: value
-            }));
-        }
-    }, [condicoesModal]); // Dependência para recriar a função quando `condicoesModal` mudar.
-
-    const adicionarCondicao = () => {
-        let aux: Array<Condicao> = [...condicoesModal]
-        aux.push(condicao);
-        setCondicoesModal(aux);
-    }
 
     const ordenarPorIniciativa = () => {
         const aux = [...combateOrder].sort(function (a, b) {
@@ -119,7 +88,7 @@ function Combat() {
 
     const resetCombateForm = () => {
         const zero: Combatente = {
-            id: 0,
+            id: '',
             iniciativa: 0,
             nome: "",
             status: [],
@@ -131,7 +100,7 @@ function Combat() {
 
     const adicionarAoCombate = () => {
         let aux: Array<Combatente> = [...combateOrder];
-        const teste = { ...combatente, id: (combateOrder?.length > 0 ? combateOrder.length + 1 : 1) }
+        const teste = { ...combatente, id: uuidv5(combatente.nome + String(combateOrder.length), namespace) }
         console.log('entrou aqui', teste);
         aux.push(teste);
         console.log(aux);
@@ -144,7 +113,7 @@ function Combat() {
         const count = combateOrder.filter(item => item.nome.startsWith(personagem.nome)).length;
 
         const temp: Combatente = {
-            id: (combateOrder?.length > 0 ? combateOrder.length + 1 : 1),
+            id: uuidv5(personagem.nome + String(combateOrder.length) + String(count + 1) , namespace),
             iniciativa: 0,
             nome: (count > 0 ? personagem.nome + ' ' + String(count + 1) : personagem.nome),
             status: [],
@@ -262,6 +231,7 @@ function Combat() {
     }
 
     const DisplayPersonagens: React.FC<DisplayPersonagensProps> = ({ tipo }) => {
+        console.log(mesa?.personagens)
         if (mesa?.personagens?.length > 0) {
             return (
                 <div className="grid">
@@ -308,16 +278,44 @@ function Combat() {
         );
     };
 
-    const StatusPersonagem: React.FC<CombatenteStatusDisplayProps> = ({ combatente }) => {
+    const StatusPersonagem: React.FC = () => {
         const { 
             control, 
             handleSubmit, 
             register, 
             formState: { errors },
-            getValues 
+            getValues,
         } = useForm<Condicao>();
         
-        const onSubmit: SubmitHandler<Condicao> = data => console.log(data);
+        const onSubmit: SubmitHandler<Condicao> = data => {
+            let aux: Array<Condicao> = [...condicoesModal]
+            aux.push(
+                montaCondicaoModal(data)
+            );
+            setCondicoesModal(aux);
+
+            if (selectedPlayer) {
+                const updatedCombatentes = combateOrder.map(combatente => {
+                    if (combatente.id === selectedPlayer) {
+                        return { ...combatente, status: aux };
+                    }
+                    return combatente;
+                });
+                setCombateOrder(updatedCombatentes);
+            }
+        };
+
+        const montaCondicaoModal = (data: Condicao): Condicao => {
+            const auxiliar = sistema.condicoes.find(item => item.label === data.label);
+            const condicao: Condicao = {
+                id: uuidv5(auxiliar?.label ?? 'guacamole', namespace),
+                rodadas: Number(data.rodadas) ?? 0,
+                label: auxiliar?.label ?? 'A',
+                value: auxiliar?.value ?? 'A',
+                descricao: auxiliar?.descricao ?? 'A'
+            }
+            return condicao;
+        }
 
         return (
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -358,32 +356,67 @@ function Combat() {
                             <thead>
                                 <tr>
                                     <td> Efeito </td>
-                                    <td> Rodadas restante </td>
+                                    <td> Rodadas restantes </td>
                                     <td> </td>
                                 </tr>
                             </thead>
                             <tbody>
                                 {condicoesModal?.length && condicoesModal.map((item: Condicao, index: number) => {
                                     return (
-                                        <tr>
-                                            <td> Beijo grego </td>
-                                            <td> Graviola </td>
-                                            <td style={{ width: '3.4rem' }}>
-                                                <Button
-                                                    backgroundColor='#272727'
-                                                    border='1px solid lightgray'
-                                                    padding='0.4rem;'
-                                                    borderRadius='50%'
-                                                    width='auto'
-                                                // onClick={() => removerDoCombate(index)}
-                                                >
-                                                    <X
-                                                        fill='white'
-                                                        size={'1.2rem'}
-                                                    />
-                                                </Button>
-                                            </td>
-                                        </tr>
+                                        <>
+                                            <tr>
+                                                <td> {item.label} </td>
+                                                <td style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}> 
+                                                    <Button
+                                                        backgroundColor='#ffe600cc'
+                                                        padding='0.4rem 0.4rem 0.4rem 0.6rem;'
+                                                        borderRadius='50% 0px 0px 50%' 
+                                                        width='auto'
+                                                            // onClick={() => removerDoCombate(index)}
+                                                    >
+                                                        <Minus
+                                                            color='black'
+                                                            size={'1.2rem'}
+                                                        />
+                                                    </Button>
+                                                    <span style={{ width: '3rem', textAlign: 'center' }}>
+                                                        {item.rodadas  ?? 'Até ser removido' } 
+                                                    </span>
+                                                    <Button
+                                                        backgroundColor='#ffe600cc'
+                                                        padding='0.4rem 0.6rem 0.4rem 0.4rem;'
+                                                        borderRadius='0px 50% 50% 0px' 
+                                                        width='auto'
+                                                            // onClick={() => removerDoCombate(index)}
+                                                    >
+                                                        <Plus
+                                                            color='black'
+                                                            size={'1.2rem'}
+                                                        />
+                                                    </Button>
+                                                </td>
+                                                <td style={{ width: '3.4rem' }}>
+                                                    <Button
+                                                        backgroundColor='#272727'
+                                                        border='1px solid lightgray'
+                                                        padding='0.4rem;'
+                                                        borderRadius='50%'
+                                                        width='auto'
+                                                    // onClick={() => removerDoCombate(index)}
+                                                    >
+                                                        <X
+                                                            fill='white'
+                                                            size={'1.2rem'}
+                                                        />
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colSpan={3}>
+                                                    {item.descricao}
+                                                </td>
+                                            </tr>
+                                        </>
                                     )
                                 })}
 
@@ -620,7 +653,7 @@ function Combat() {
             </div>
 
             <Modal isOpen={isModalOpen} onClose={closeModal} width='55rem'>
-                <StatusPersonagem combatente={combateOrder[0]} />
+                <StatusPersonagem />
             </Modal>
 
         </>

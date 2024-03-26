@@ -7,7 +7,7 @@ interface Sistema {
 }
 
 interface Condicao {
-    id: number;
+    id: string;
     label: string;
     value: string;
     descricao: string;
@@ -47,7 +47,7 @@ interface PersonagemRequest {
 }
 
 interface Combatente {
-    id: number;
+    id: string;
     nome: string;
     iniciativa: number;
     vida: number;
