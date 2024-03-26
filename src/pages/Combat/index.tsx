@@ -68,6 +68,16 @@ function Combat() {
         }));
     };
 
+    const handleInputChange = (index: number, field: 'iniciativa' | 'vida', value: number) => {
+        setCombateOrder(prevState => {
+            const newState = [...prevState];
+            const combatente = { ...newState[index] };
+            combatente[field] = value;
+            newState[index] = combatente;
+            return newState;
+        });
+    };
+
     const openModal = (personagem: Combatente) => {
         setIsModalOpen(true);
         setCondicoesModal(personagem.status);
@@ -269,7 +279,7 @@ function Combat() {
                                 <Button backgroundColor='#ffe600cc' color='black' onClick={() => adicionarAoCombateExistentes(personagem)}> Combate </Button>
                             </div>
                             <div className='col-6'>
-                                <Button backgroundColor='#0085ff' color='white' onClick={() => abrirFicha(personagem)}> Abrir ficha </Button>
+                                <Button backgroundColor='#0261de' color='white' onClick={() => abrirFicha(personagem)}> Abrir ficha </Button>
                             </div>
                         </div>
                     </section>
@@ -564,6 +574,7 @@ function Combat() {
                                                                         name='vida'
                                                                         value={item.vida}
                                                                         borderColor='transparent'
+                                                                        onChange={(e) => handleInputChange(index, 'vida', Number(e.target.value))}
                                                                     />
                                                                 </td>
                                                                 <td style={{ width: '5.625rem' }}>
@@ -572,6 +583,7 @@ function Combat() {
                                                                         name='iniciativa'
                                                                         value={item.iniciativa}
                                                                         borderColor='transparent'
+                                                                        onChange={(e) => handleInputChange(index, 'iniciativa', Number(e.target.value))}
                                                                     />
                                                                 </td>
                                                                 <td>
