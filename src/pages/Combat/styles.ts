@@ -56,8 +56,9 @@ export const TableCombat = styled.table`
         font-size: 18px;
 
         & input {
-            background-color: #ffe600cc;
+            background-color: transparent;
             color: black;
+            border: 1px solid black;
         }
 
         & button {
@@ -85,3 +86,24 @@ export const FloatingCombatentes = styled.div`
 export const ColunasMenoresCombat = styled.th`
     width: 5.625rem;
 `;
+
+export const CondicoesWaraper = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: auto;
+`;
+
+export const CondicoesChip = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 0 0.3rem #00000082;
+    width: auto;
+    padding: 0.5rem;
+    border-radius: 5px;
+    background-color: #ac2727;
+    color: white;
+    cursor: pointer;
+`;
+

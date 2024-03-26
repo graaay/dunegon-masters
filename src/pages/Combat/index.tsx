@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Divider, InputFloatingLabel, Modal, Select } from '../../components/index'
-import { TurnoWrapper, Button, Input, TableCombat, ColunasMenoresCombat, FloatingCombatentes } from './styles'
-import { Sword, Pencil, User, Note, Heart, Drop, Eye, List, X, PlusMinus, ArrowCounterClockwise, Plus, Minus } from "phosphor-react";
+import { TurnoWrapper, Button, Input, TableCombat, ColunasMenoresCombat, FloatingCombatentes, CondicoesChip, CondicoesWaraper } from './styles'
+import { Sword, Pencil, User, Note, Heart, Drop, Eye, List, X, PlusMinus, ArrowCounterClockwise, Plus, Minus, Timer } from "phosphor-react";
 import { Combatente, Combate, Mesa, Personagem, Condicao, Sistema } from '../../services/types';
 import { sistemas as Sistemas, sistemas } from '../../services/systens';
 import { fetchMesaById } from '../../services/api';
@@ -429,7 +429,7 @@ function Combat() {
                 </div>
             </form>
         )
-    }
+    };
 
     return (
         <>
@@ -575,9 +575,21 @@ function Combat() {
                                                                     />
                                                                 </td>
                                                                 <td>
-                                                                    <div style={{ display: 'flex', width: '100%' }}>
-                                                                        <div style={{ width: '85%' }}>
-                                                                            Bom de guerra
+                                                                    <div style={{ display: 'flex', width: '100%', gap: '1rem' }}>
+                                                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', width: '85%', flexDirection: 'row' }}>
+                                                                            {item.status?.length > 0 &&
+                                                                                item.status.map((condicao: Condicao) => {
+                                                                                    return (
+                                                                                        <CondicoesWaraper>
+                                                                                            <CondicoesChip
+                                                                                                onClick={() => openModal(item)}
+                                                                                            >
+                                                                                                {condicao.label} / <Timer size={'1rem'} color='white'/> {condicao.rodadas}
+                                                                                            </CondicoesChip>
+                                                                                        </CondicoesWaraper>
+                                                                                    )
+                                                                                })
+                                                                            }
                                                                         </div>
                                                                         <div style={{ width: '15%' }}>
                                                                             <Button

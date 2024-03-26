@@ -64,39 +64,4 @@ const FloatingLabelInput = forwardRef<HTMLInputElement, FloatingLabelInputProps>
 
 )
 
-// const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
-//   label,
-//   borderColor,
-//   labelColor,
-//   focusLabelColor,
-//   backgroundColor,
-//   ...props
-// }, ref) => {
-//   const [isFilled, setIsFilled] = useState(false);
-
-//   useEffect(() => {
-//     setIsFilled(!!props.value);
-//   }, [props.value]);
-
-//   return (
-//     <InputFloatingLabel
-//       borderColor={borderColor}
-//       labelColor={labelColor}
-//       focusLabelColor={focusLabelColor}
-//       backgroundColor={backgroundColor}
-//     >
-//       <input 
-//         {...props} placeholder=' ' onChange={(e) => {
-//         if (props.onChange) {
-//           props.onChange(e);
-//         }
-//         setIsFilled(!!e.target.value);
-//       }} />
-//       {label &&
-//         <label className={isFilled ? 'filled' : ''}>{label}</label>
-//       }
-//     </InputFloatingLabel>
-//   );
-// };
-
 export default FloatingLabelInput;
