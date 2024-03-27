@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Divider, InputFloatingLabel, GlowingButton } from '../../components/index';
+import { Divider, InputFloatingLabel, GlowingButton, Select } from '../../components/index';
 import { Personagem, PersonagemRequest } from '../../services/types';
 import { fetchPersonagensById, editPersonagem, addPersonagem } from '../../services/api';
 import { Container } from './styles';
@@ -19,6 +19,12 @@ function CharactersForm() {
         ficha: '',
         status: {}
     } as Personagem);
+
+    const tiposPersonagem = [
+        {id: 1, name: 'Player', value: 'Player'},
+        {id: 2, name: 'NPC', value: 'NPC'},
+        {id: 3, name: 'Monstro', value: 'Monstro'},
+    ]
 
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -51,18 +57,29 @@ function CharactersForm() {
                     [name]: Number(value)
                 }
             }));
-        }
+        }    
+        
     };
 
+    const handleChangeTipo = (e: any) => {
+        
+        setPersonagemForm(prevState => ({
+            ...prevState,
+            tipo: e
+        }));
+
+        console.log(personagemForm)
+        
+    };
+    
     const goBack = () => {
         navigate(-1);
     };
 
     const handleSubmit = async () => {
-        console.log(personagemForm);
 
         const model: PersonagemRequest = {
-            personagem: personagemForm,
+            personagem: montaPersonamge(personagemForm),
             id: mesaId!
         }
 
@@ -72,6 +89,19 @@ function CharactersForm() {
             await addPersonagem(model);
             navigate(-1);
         }
+    }
+
+    const montaPersonamge  = (perso: Personagem) => {
+        const auxiliar: any = perso;
+        const retorna = {
+            nome: auxiliar.nome,
+            tipo: auxiliar.tipo.value,
+            ficha: auxiliar.ficha,
+            status: auxiliar.status,
+            id: ''
+        }
+
+        return retorna;
     }
 
     return (
@@ -108,11 +138,17 @@ function CharactersForm() {
                 </div>
 
                 <div className='col-6'>
-                    <InputFloatingLabel
+                    {/* <InputFloatingLabel
                         label="Tipo ( * )"
                         name="tipo"
                         onChange={handleChangePersonagem}
                         type="text"
+                        value={personagemForm.tipo}
+                    /> */}
+                    <Select
+                        label='Tipo (*)'
+                        options={tiposPersonagem.map(tipo => ({ label: tipo.name, value: tipo.value }))}
+                        onChange={handleChangeTipo}
                         value={personagemForm.tipo}
                     />
                 </div>

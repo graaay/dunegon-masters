@@ -104,8 +104,6 @@ function TableForm() {
         }
     }
 
-    
-
     return(
         <MainTableForm>
             {!loading && (
@@ -156,15 +154,17 @@ function TableForm() {
                                 <div className='grid'>
                                     {
                                         mesaForm.personagens.map((personagem: Personagem, indice) => {
-                                            return (
-                                                <div className="col-4">
-                                                    <CardTables>
-                                                        <div className='table-form-div-wrapper'>
-                                                            <h1> {personagem.nome} </h1>
-                                                        </div>
-                                                    </CardTables>
-                                                </div>
-                                            )
+                                            if ( personagem.tipo === 'Player') {
+                                                return (
+                                                    <div className="col-4">
+                                                        <CardTables>
+                                                            <div className='table-form-div-wrapper'>
+                                                                <h1> {personagem.nome} </h1>
+                                                            </div>
+                                                        </CardTables>
+                                                    </div>
+                                                )
+                                            }
                                         })
                                     }
                                 </div>
@@ -172,35 +172,37 @@ function TableForm() {
                                 <div className='grid'>
                                     {
                                         mesaForm.personagens.map((personagem: Personagem, indice) => {
-                                            return (
-                                                <div className="col-4">
-                                                    <CardTables>
-                                                        <div className='table-form-div-wrapper'>
-                                                            <div className='grid'>
-                                                                <div className='col-12'>
-                                                                    <h2>{personagem.nome}</h2>
-                                                                </div>
-                                                                <Divider color='transparent' marginTop='0.2rem' marginBottom='0.4rem' />
-                                                                <div className='col-4'>
-                                                                    <span style={{display: 'flex', gap: '0.4rem'}}>ND &nbsp;{personagem.status.nd}</span>
-                                                                </div>
-                                                                <div className='col-4'>
-                                                                    <span style={{display: 'flex', gap: '0.4rem', justifyContent: 'center'}}> <Heart color='#ff5050' size={20} /> {personagem.status.vida}</span>
-                                                                </div>
-                                                                <div className='col-4'>
-                                                                    <span style={{display: 'flex', gap: '0.4rem',  justifyContent: 'right'}}> <Eye color='#50e5ff' size={20} /> {personagem.status.percepcaoPassiva}</span>
-                                                                </div>
-                                                                <Divider color='transparent' marginTop='0.2rem' marginBottom='0.4rem' />
-                                                                <div className='col-12'>
-                                                                    <Button backgroundColor='#0261de'>
-                                                                        <Note size={20}/> Abrir ficha
-                                                                    </Button>
+                                           if ( personagem.tipo === 'NPC') {
+                                                return (
+                                                    <div className="col-4">
+                                                        <CardTables>
+                                                            <div className='table-form-div-wrapper'>
+                                                                <div className='grid'>
+                                                                    <div className='col-12'>
+                                                                        <h2>{personagem.nome}</h2>
+                                                                    </div>
+                                                                    <Divider color='transparent' marginTop='0.2rem' marginBottom='0.4rem' />
+                                                                    <div className='col-4'>
+                                                                        <span style={{display: 'flex', gap: '0.4rem'}}>ND &nbsp;{personagem.status.nd}</span>
+                                                                    </div>
+                                                                    <div className='col-4'>
+                                                                        <span style={{display: 'flex', gap: '0.4rem', justifyContent: 'center'}}> <Heart color='#ff5050' size={20} /> {personagem.status.vida}</span>
+                                                                    </div>
+                                                                    <div className='col-4'>
+                                                                        <span style={{display: 'flex', gap: '0.4rem',  justifyContent: 'right'}}> <Eye color='#50e5ff' size={20} /> {personagem.status.percepcaoPassiva}</span>
+                                                                    </div>
+                                                                    <Divider color='transparent' marginTop='0.2rem' marginBottom='0.4rem' />
+                                                                    <div className='col-12'>
+                                                                        <Button backgroundColor='#0261de'>
+                                                                            <Note size={20}/> Abrir ficha
+                                                                        </Button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </CardTables>
-                                                </div>
-                                            )
+                                                        </CardTables>
+                                                    </div>
+                                                )
+                                           }
                                         })
                                     }
                                 </div>
@@ -208,35 +210,37 @@ function TableForm() {
                                 <div className='grid'>
                                     {
                                         mesaForm.personagens.map((personagem: Personagem, indice) => {
-                                            return (
-                                                <div className="col-4">
-                                                    <CardTables>
-                                                        <div className='table-form-div-wrapper'>
-                                                            <div className='grid'>
-                                                                <div className='col-12'>
-                                                                    <h2>{personagem.nome}</h2>
-                                                                </div>
-                                                                <Divider color='transparent' marginTop='0.2rem' marginBottom='0.4rem' />
-                                                                <div className='col-4'>
-                                                                    <span style={{display: 'flex', gap: '0.4rem'}}>ND &nbsp;{personagem.status.nd}</span>
-                                                                </div>
-                                                                <div className='col-4'>
-                                                                    <span style={{display: 'flex', gap: '0.4rem', justifyContent: 'center'}}> <Heart color='#ff5050' size={20} /> {personagem.status.vida}</span>
-                                                                </div>
-                                                                <div className='col-4'>
-                                                                    <span style={{display: 'flex', gap: '0.4rem',  justifyContent: 'right'}}> <Eye color='#50e5ff' size={20} /> {personagem.status.percepcaoPassiva}</span>
-                                                                </div>
-                                                                <Divider color='transparent' marginTop='0.2rem' marginBottom='0.4rem' />
-                                                                <div className='col-12'>
-                                                                    <Button backgroundColor='#0261de'>
-                                                                        <Note size={20}/> Abrir ficha
-                                                                    </Button>
+                                            if ( personagem.tipo === 'Monstro') {
+                                                return (
+                                                    <div className="col-4">
+                                                        <CardTables>
+                                                            <div className='table-form-div-wrapper'>
+                                                                <div className='grid'>
+                                                                    <div className='col-12'>
+                                                                        <h2>{personagem.nome}</h2>
+                                                                    </div>
+                                                                    <Divider color='transparent' marginTop='0.2rem' marginBottom='0.4rem' />
+                                                                    <div className='col-4'>
+                                                                        <span style={{display: 'flex', gap: '0.4rem'}}>ND &nbsp;{personagem.status.nd}</span>
+                                                                    </div>
+                                                                    <div className='col-4'>
+                                                                        <span style={{display: 'flex', gap: '0.4rem', justifyContent: 'center'}}> <Heart color='#ff5050' size={20} /> {personagem.status.vida}</span>
+                                                                    </div>
+                                                                    <div className='col-4'>
+                                                                        <span style={{display: 'flex', gap: '0.4rem',  justifyContent: 'right'}}> <Eye color='#50e5ff' size={20} /> {personagem.status.percepcaoPassiva}</span>
+                                                                    </div>
+                                                                    <Divider color='transparent' marginTop='0.2rem' marginBottom='0.4rem' />
+                                                                    <div className='col-12'>
+                                                                        <Button backgroundColor='#0261de'>
+                                                                            <Note size={20}/> Abrir ficha
+                                                                        </Button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </CardTables>
-                                                </div>
-                                            )
+                                                        </CardTables>
+                                                    </div>
+                                                )
+                                            }
                                         })
                                     }
                                 </div>
