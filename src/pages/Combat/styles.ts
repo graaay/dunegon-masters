@@ -107,3 +107,9 @@ export const CondicoesChip = styled.div`
     cursor: pointer;
 `;
 
+export const DividerWrapper = styled.div`
+    display: flex;
+    min-height: 100%;
+    justify-content: space-between;
+    align-items: baseline;
+`;

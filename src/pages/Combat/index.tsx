@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Divider, InputFloatingLabel, Modal, Select } from '../../components/index'
-import { TurnoWrapper, Button, Input, TableCombat, ColunasMenoresCombat, FloatingCombatentes, CondicoesChip, CondicoesWaraper } from './styles'
-import { Sword, Pencil, User, Note, Heart, Drop, Eye, List, X, PlusMinus, ArrowCounterClockwise, Plus, Minus, Timer } from "phosphor-react";
+import { Divider, InputFloatingLabel, Modal, Select, SliderCheckbox } from '../../components/index'
+import { TurnoWrapper, Button, Input, TableCombat, ColunasMenoresCombat, FloatingCombatentes, CondicoesChip, CondicoesWaraper, DividerWrapper } from './styles'
+import { Sword, Pencil, User, Note, Heart, Drop, SlidersHorizontal, List, X, PlusMinus, ArrowCounterClockwise, Plus, Minus, Timer } from "phosphor-react";
 import { Combatente, Combate, Mesa, Personagem, Condicao, Sistema } from '../../services/types';
 import { sistemas as Sistemas, sistemas } from '../../services/systens';
 import { fetchMesaById } from '../../services/api';
@@ -37,6 +37,7 @@ function Combat() {
     const [condicoesModal, setCondicoesModal] = useState<Array<Condicao>>([]);
     const namespace = uuidv4();
     const [selectedPlayer, setSelectedPlayer] = useState<String>('');
+    const [isModalConfigOpen, setIsModalConfigOpen] = useState(false);
 
     useEffect(() => {
 
@@ -85,7 +86,8 @@ function Combat() {
     };
 
     const closeModal = () => {
-        setIsModalOpen(false)
+        setIsModalOpen(false);
+        setIsModalConfigOpen(false);
     };
 
     const ordenarPorIniciativa = () => {
@@ -481,6 +483,76 @@ function Combat() {
         )
     };
 
+    const ConfiguracoesModal: React.FC = () => {
+        const { control, getValues, setValue } = useForm();
+    
+        const handleCheckboxChange = (fieldName: string) => {
+            const value = getValues(fieldName);
+            setValue(fieldName, !value);
+            console.log(getValues());
+        };
+    
+        return (
+            <>
+                <h3 style={{textAlign: 'center'}}>
+                    Configurações do combate
+                </h3>
+                <Divider marginTop='0.5rem' marginBottom="0.5rem" color='transparent' />
+    
+                <form>
+                    <div className='grid'>
+                        <div className='col-12'>
+                            <h4> Exibição de dados no combate </h4>
+                            <Divider marginTop='0.5rem' marginBottom="0.5rem" />
+                        </div>
+                        <div className='col-12'>
+                            <DividerWrapper>
+                                <label>CA no combate</label>
+                                <SliderCheckbox name="exibirCA" control={control} onChange={() => handleCheckboxChange('exibirCA')} />
+                            </DividerWrapper>
+                            <Divider marginTop='0.5rem' color='transparent' />
+                        </div>
+                        <div className='col-12'>
+                            <DividerWrapper>
+                                <label>Sanidade no combate</label>
+                                <SliderCheckbox name="exibirSanidade" control={control} onChange={() => handleCheckboxChange('exibirSanidade')} />
+                            </DividerWrapper>
+                            <Divider marginTop='0.5rem' color='transparent' />
+                        </div>
+                        <div className='col-12'>
+                            <DividerWrapper>
+                                <label>Percepção no combate</label>
+                                <SliderCheckbox name="exibirPercepcao" control={control} onChange={() => handleCheckboxChange('exibirPercepcao')} />
+                            </DividerWrapper>
+                            <Divider marginTop='0.5rem' color='transparent' />
+                        </div>
+                    </div>
+                    <div className='grid'>
+                        <div className='col-12'>
+                            <Divider marginTop='0.5rem' marginBottom="0.5rem" color='transparent' />
+                            <h4> Controle de dados no combate </h4>
+                            <Divider marginTop='0.5rem' marginBottom="0.5rem" />
+                        </div>
+                        <div className='col-12'>
+                            <DividerWrapper>
+                                <label> Dano causado </label>
+                                <SliderCheckbox name="exibirDano" control={control} onChange={() => handleCheckboxChange('exibirDano')} />
+                            </DividerWrapper>
+                            <Divider marginTop='0.5rem' color='transparent' />
+                        </div>
+                        <div className='col-12'>
+                            <DividerWrapper>
+                                <label> Mana atual </label>
+                                <SliderCheckbox name="exibirMana" control={control} onChange={() => handleCheckboxChange('exibirMana')} />
+                            </DividerWrapper>
+                            <Divider marginTop='0.5rem' color='transparent' />
+                        </div>
+                    </div>
+                </form>
+            </>
+        );
+    };
+
     return (
         <>
             <div className='grid'>
@@ -509,6 +581,20 @@ function Combat() {
                 </div>
                 <div className='col-4'>
                     <TurnoWrapper justifyContent='right'>
+                        <Button
+                            width='auto'
+                            borderRadius='50%'
+                            backgroundColor='#ffe600cc'
+                            color='black'
+                            padding='0.5rem 0.5rem;'
+                            onClick={() => setIsModalConfigOpen(true)}
+                        >
+                            <SlidersHorizontal
+                                fill='white'
+                                size={'1.2rem'}
+                            />
+                        </Button>
+
                         <Button
                             width='auto'
                             borderRadius='50%'
@@ -718,6 +804,10 @@ function Combat() {
 
             <Modal isOpen={isModalOpen} onClose={closeModal} width='55rem'>
                 <StatusPersonagem />
+            </Modal>
+
+            <Modal isOpen={isModalConfigOpen} onClose={closeModal} width='35rem'>
+                <ConfiguracoesModal />
             </Modal>
 
         </>

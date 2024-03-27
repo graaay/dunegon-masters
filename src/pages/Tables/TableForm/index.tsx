@@ -192,7 +192,7 @@ function TableForm() {
                                                                 </div>
                                                                 <Divider color='transparent' marginTop='0.2rem' marginBottom='0.4rem' />
                                                                 <div className='col-12'>
-                                                                    <Button>
+                                                                    <Button backgroundColor='#0261de'>
                                                                         <Note size={20}/> Abrir ficha
                                                                     </Button>
                                                                 </div>
@@ -228,7 +228,7 @@ function TableForm() {
                                                                 </div>
                                                                 <Divider color='transparent' marginTop='0.2rem' marginBottom='0.4rem' />
                                                                 <div className='col-12'>
-                                                                    <Button>
+                                                                    <Button backgroundColor='#0261de'>
                                                                         <Note size={20}/> Abrir ficha
                                                                     </Button>
                                                                 </div>

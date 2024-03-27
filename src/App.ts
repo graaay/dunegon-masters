@@ -27,30 +27,30 @@ const GlobalStyle = createGlobalStyle`
 
   /* Ajustes de tamanho de rem baseados na largura da tela */
   html {
-    font-size: 16px; /* Tamanho padrão para dispositivos de largura maior */
+    font-size: 15px; /* Tamanho padrão para dispositivos de largura maior */
 
     @media (max-width: 1600px) {
-      font-size: 15px; /* Ajusta para dispositivos com largura até 1200px */
-    }
-
-    @media (max-width: 1400px) {
       font-size: 14px; /* Ajusta para dispositivos com largura até 1200px */
     }
 
-    @media (max-width: 1200px) {
-      font-size: 13px; /* Ajusta para dispositivos com largura até 992px */
+    @media (max-width: 1400px) {
+      font-size: 13px; /* Ajusta para dispositivos com largura até 1200px */
     }
 
-    @media (max-width: 992px) {
+    @media (max-width: 1200px) {
       font-size: 12px; /* Ajusta para dispositivos com largura até 992px */
     }
 
+    @media (max-width: 992px) {
+      font-size: 11px; /* Ajusta para dispositivos com largura até 992px */
+    }
+
     @media (max-width: 768px) {
-      font-size: 11px; /* Ajusta para dispositivos com largura até 768px */
+      font-size: 10px; /* Ajusta para dispositivos com largura até 768px */
     }
 
     @media (max-width: 576px) {
-      font-size: 10px; /* Ajusta para dispositivos com largura até 576px */
+      font-size: 9px; /* Ajusta para dispositivos com largura até 576px */
     }
   }
 `;
