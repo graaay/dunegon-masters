@@ -297,13 +297,7 @@ function Combat() {
             getValues,
         } = useForm<Condicao>();
         
-        const onSubmit: SubmitHandler<Condicao> = data => {
-            let aux: Array<Condicao> = [...condicoesModal]
-            aux.push(
-                montaCondicaoModal(data)
-            );
-            setCondicoesModal(aux);
-
+        const updateCombateOrder = (aux: Condicao[]) => {
             if (selectedPlayer) {
                 const updatedCombatentes = combateOrder.map(combatente => {
                     if (combatente.id === selectedPlayer) {
@@ -313,7 +307,36 @@ function Combat() {
                 });
                 setCombateOrder(updatedCombatentes);
             }
+        }
+
+        const onSubmit: SubmitHandler<Condicao> = data => {
+            let aux: Array<Condicao> = [...condicoesModal]
+            aux.push(
+                montaCondicaoModal(data)
+            );
+            setCondicoesModal(aux);
+            updateCombateOrder(aux);
         };
+
+        const addMinusTime = (index: number, type: 'plus' | 'minus') => {
+            let aux = [...condicoesModal];
+            if(aux[index]) {
+                if(type === 'minus') {
+                    aux[index].rodadas! -= 1;
+                } else {
+                    aux[index].rodadas! += 1;
+                }
+            }
+            setCondicoesModal(aux);
+            updateCombateOrder(aux);
+        }
+
+        const removerCondicao = (index: number) => {
+            let aux = [...condicoesModal];
+            aux.splice(index, 1);
+            setCondicoesModal(aux);
+            updateCombateOrder(aux);
+        }
 
         const montaCondicaoModal = (data: Condicao): Condicao => {
             const auxiliar = sistema.condicoes.find(item => item.label === data.label);
@@ -382,7 +405,7 @@ function Combat() {
                                                         padding='0.4rem 0.4rem 0.4rem 0.6rem;'
                                                         borderRadius='50% 0px 0px 50%' 
                                                         width='auto'
-                                                            // onClick={() => removerDoCombate(index)}
+                                                            onClick={() => addMinusTime(index, 'minus')}
                                                     >
                                                         <Minus
                                                             color='black'
@@ -397,7 +420,7 @@ function Combat() {
                                                         padding='0.4rem 0.6rem 0.4rem 0.4rem;'
                                                         borderRadius='0px 50% 50% 0px' 
                                                         width='auto'
-                                                            // onClick={() => removerDoCombate(index)}
+                                                            onClick={() => addMinusTime(index, 'plus')}
                                                     >
                                                         <Plus
                                                             color='black'
@@ -412,7 +435,7 @@ function Combat() {
                                                         padding='0.4rem;'
                                                         borderRadius='50%'
                                                         width='auto'
-                                                    // onClick={() => removerDoCombate(index)}
+                                                        onClick={() => removerCondicao(index)}
                                                     >
                                                         <X
                                                             fill='white'
@@ -573,7 +596,7 @@ function Combat() {
                                                                         type='number'
                                                                         name='vida'
                                                                         value={item.vida}
-                                                                        borderColor='transparent'
+                                                                        borderColor='#7a7a7a'
                                                                         onChange={(e) => handleInputChange(index, 'vida', Number(e.target.value))}
                                                                     />
                                                                 </td>
@@ -582,13 +605,13 @@ function Combat() {
                                                                         type='number'
                                                                         name='iniciativa'
                                                                         value={item.iniciativa}
-                                                                        borderColor='transparent'
+                                                                        borderColor='#7a7a7a'
                                                                         onChange={(e) => handleInputChange(index, 'iniciativa', Number(e.target.value))}
                                                                     />
                                                                 </td>
                                                                 <td>
                                                                     <div style={{ display: 'flex', width: '100%', gap: '1rem' }}>
-                                                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', width: '85%', flexDirection: 'row' }}>
+                                                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', width: '90%', flexDirection: 'row' }}>
                                                                             {item.status?.length > 0 &&
                                                                                 item.status.map((condicao: Condicao) => {
                                                                                     return (
@@ -603,7 +626,7 @@ function Combat() {
                                                                                 })
                                                                             }
                                                                         </div>
-                                                                        <div style={{ width: '15%' }}>
+                                                                        <div style={{ width: '10%' }}>
                                                                             <Button
                                                                                 backgroundColor='#ffe600cc'
                                                                                 color='black'
