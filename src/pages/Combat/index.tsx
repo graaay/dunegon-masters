@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Divider, InputFloatingLabel, Modal, Select, SliderCheckbox } from '../../components/index'
 import { TurnoWrapper, Button, Input, TableCombat, ColunasMenoresCombat, FloatingCombatentes, CondicoesChip, CondicoesWaraper, DividerWrapper } from './styles'
-import { Sword, Pencil, User, Note, Heart, Drop, SlidersHorizontal, List, X, PlusMinus, ArrowCounterClockwise, Plus, Minus, Timer } from "phosphor-react";
+import { SlidersHorizontal, List, X, PlusMinus, ArrowCounterClockwise, Plus, Minus, Timer } from "phosphor-react";
 import { Combatente, Combate, Mesa, Personagem, Condicao, Sistema } from '../../services/types';
-import { sistemas as Sistemas, sistemas } from '../../services/systens';
+import { sistemas } from '../../services/systens';
 import { fetchMesaById } from '../../services/api';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
@@ -19,7 +19,6 @@ interface ItemPersonagemProps {
 }
 
 function Combat() {
-    const navigate = useNavigate();
 
     const { mesaId } = useParams<string>();
     const [combateOrder, setCombateOrder] = useState<Array<Combatente>>([]);
@@ -153,11 +152,11 @@ function Combat() {
         setCombateOrder(items);
         let novoIndice = combateOrder.findIndex((_, i) => combateOrder[i].nome === combate.turno);
         if (novoIndice !== -1) {
-            atualizarTurno(true);
+            atualizarTurno();
         }
     };
 
-    const atualizarTurno = (dragged = false) => {
+    const atualizarTurno = () => {
         let novoIndice = combateOrder.findIndex((_, i) => combateOrder[i].nome === combate.turno);
 
         // Se é o último jogador ou não foi encontrado, começa do início
@@ -259,7 +258,7 @@ function Combat() {
         }
     }
 
-    const DisplayPersonagens: React.FC<DisplayPersonagensProps> = ({ tipo }) => {
+    const DisplayPersonagens: React.FC<DisplayPersonagensProps> = () => {
         console.log(mesa?.personagens)
         if (mesa?.personagens?.length > 0) {
             return (
@@ -311,8 +310,7 @@ function Combat() {
         const { 
             control, 
             handleSubmit, 
-            register, 
-            formState: { errors },
+            register,
             getValues,
         } = useForm<Condicao>();
         
@@ -567,7 +565,7 @@ function Combat() {
                         padding='0.2rem 0.4rem'
                         backgroundColor='#ffe600cc'
                         color='black'
-                        onClick={() => atualizarTurno(false)}
+                        onClick={() => atualizarTurno()}
                     >
                         <span>
                             Próximo turno
@@ -679,7 +677,7 @@ function Combat() {
                                             {combateOrder?.length > 0 && combateOrder.map((item, index) => {
                                                 return (
                                                     <Draggable key={item.id} draggableId={String(item.id)} index={index} >
-                                                        {(provided, snapshot) => (
+                                                        {(provided) => (
                                                             <tr
                                                                 className={retornaAtual(index) ? 'player-atual' : ''}
                                                                 ref={provided.innerRef}

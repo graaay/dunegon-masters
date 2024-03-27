@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ImageRadioButtons, InputFloatingLabel, /*Button*/ SliderCheckbox } from '../../../components/index'
 import { sistemas } from '../../../services/systens'
-import { MainTableForm, StyledForm, SaveButton, CustomCheckbox, StartButton, CreateButton, CardTables, OpenFichaButton, Divider, GlowingButton, Button } from './styles';
-import { FloppyDisk, Sword, Pencil, User, Note,  Heart, Drop, Eye } from "phosphor-react";
+import { MainTableForm, StyledForm, SaveButton, StartButton, CreateButton, CardTables, Divider, Button } from './styles';
+import { FloppyDisk, Sword, User, Note,  Heart, Eye } from "phosphor-react";
 import { Mesa, Personagem, Sistema } from '../../../services/types';
 import { fetchMesaById, editMesa, addMesa } from '../../../services/api';
 
@@ -165,7 +165,7 @@ function TableForm() {
                                 <h4> Players </h4>
                                 <div className='grid'>
                                     {
-                                        mesaForm.personagens.map((personagem: Personagem, indice) => {
+                                        mesaForm.personagens.map((personagem: Personagem) => {
                                             if ( personagem.tipo === 'Player') {
                                                 return (
                                                     <div className="col-4">
@@ -183,7 +183,7 @@ function TableForm() {
                                 <h4> NPC's </h4>
                                 <div className='grid'>
                                     {
-                                        mesaForm.personagens.map((personagem: Personagem, indice) => {
+                                        mesaForm.personagens.map((personagem: Personagem) => {
                                            if ( personagem.tipo === 'NPC') {
                                                 return (
                                                     <div className="col-4">
@@ -221,7 +221,7 @@ function TableForm() {
                                 <h4> Monstros </h4>
                                 <div className='grid'>
                                     {
-                                        mesaForm.personagens.map((personagem: Personagem, indice) => {
+                                        mesaForm.personagens.map((personagem: Personagem) => {
                                             if ( personagem.tipo === 'Monstro') {
                                                 return (
                                                     <div className="col-4">
