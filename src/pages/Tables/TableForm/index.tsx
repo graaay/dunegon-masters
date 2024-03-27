@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ImageRadioButtons, InputFloatingLabel, /*Button*/ } from '../../../components/index'
+import { ImageRadioButtons, InputFloatingLabel, /*Button*/ SliderCheckbox } from '../../../components/index'
 import { sistemas } from '../../../services/systens'
 import { MainTableForm, StyledForm, SaveButton, CustomCheckbox, StartButton, CreateButton, CardTables, OpenFichaButton, Divider, GlowingButton, Button } from './styles';
 import { FloppyDisk, Sword, Pencil, User, Note,  Heart, Drop, Eye } from "phosphor-react";
@@ -41,6 +41,14 @@ function TableForm() {
                 [name]: value
             }));
         }
+    };
+
+    const handleCheckBox = (campo: string, value: boolean) => {
+
+        setMesaForm(prevState => ({
+            ...prevState,
+            [campo]: !value
+        }));
     };
 
     const handleChangeSistema = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,11 +132,15 @@ function TableForm() {
                             type="number"
                             value={mesaForm.nivel}
                         />
-                        <CustomCheckbox>
-                            <input type="checkbox" checked={mesaForm.mesaAtiva} onChange={handleChangeMesa} />
-                            <span className="checkmark"></span>
-                            <label>Mesa Ativa</label>
-                        </CustomCheckbox>
+                        <div>
+                            <label style={{display: 'block'}}> Mesa ativa </label>
+                            <Divider color='transparent' marginTop='0.2rem' marginBottom='0.4rem'/>
+                            <SliderCheckbox
+                                name="mesaAtiva"
+                                onChange={() => handleCheckBox('mesaAtiva', mesaForm.mesaAtiva)}
+                                value={mesaForm.mesaAtiva}
+                            />
+                        </div>
                         {/* Outros FormGroup e elementos */}
                         <div style={{display: "flex", gap: "1rem"}}>
                             <SaveButton onClick={handleSubmit} type='button'> 

@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 
 interface SliderCheckboxProps {
     name: string;
-    control: any;
-    onChange: () => void;
+    control?: any;
+    onChange: (checked: boolean) => void;
+    value?: boolean; // Adicionado para controle direto do estado
 }
 
 const CheckboxContainer = styled.label`
@@ -46,19 +47,42 @@ const Slider = styled.span<{ isChecked: boolean }>`
     }
 `;
 
-const SliderCheckbox: React.FC<SliderCheckboxProps> = ({ name, control, onChange }) => {
-    return (
-        <Controller
-            name={name}
-            control={control}
-            render={({ field }) => (
-                <CheckboxContainer>
-                    <Checkbox type="checkbox" {...field} onChange={onChange} />
-                    <Slider isChecked={field.value}></Slider>
-                </CheckboxContainer>
-            )}
-        />
-    );
+const SliderCheckbox: React.FC<SliderCheckboxProps> = ({ name, control, onChange, value: initialValue }) => {
+    // Estado local para quando não estiver usando react-hook-form
+    const [isChecked, setIsChecked] = useState(initialValue || false);
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (control) {
+            onChange(event.target.checked);
+        } else {
+            setIsChecked(event.target.checked);
+            onChange(event.target.checked);
+        }
+    };
+
+    if (control) {
+        // Quando estiver usando react-hook-form
+        return (
+            <Controller
+                name={name}
+                control={control}
+                render={({ field }) => (
+                    <CheckboxContainer>
+                        <Checkbox type="checkbox" {...field} onChange={handleChange} />
+                        <Slider isChecked={field.value}></Slider>
+                    </CheckboxContainer>
+                )}
+            />
+        );
+    } else {
+        // Quando estiver usando useState
+        return (
+            <CheckboxContainer>
+                <Checkbox type="checkbox" checked={isChecked} onChange={handleChange} />
+                <Slider isChecked={isChecked}></Slider>
+            </CheckboxContainer>
+        );
+    }
 };
 
 export default SliderCheckbox;
