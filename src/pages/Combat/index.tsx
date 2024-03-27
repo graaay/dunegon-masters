@@ -165,12 +165,29 @@ function Combat() {
                 turno: combateOrder[0]?.nome,
                 rodada: novoIndice !== -1 ? prev.rodada + 1 : prev.rodada,
             }));
+            const combatentesAtualizados = atualizarDebuffs(combateOrder);
+            setCombateOrder(combatentesAtualizados);
         } else {
             setCombate(prev => ({
                 ...prev,
                 turno: combateOrder[novoIndice + 1]?.nome,
             }));
         }
+    };
+
+    const atualizarDebuffs = (combatentes: Array<Combatente>) => {
+        return combatentes.map(combatente => {
+            // Filtra os debuffs para remover aqueles cujas rodadas chegaram a 0
+            const debuffsAtualizados = combatente.status.filter(debuff => {
+                debuff.rodadas! -= 1; // Decrementa as rodadas
+                return debuff.rodadas! > 0; // Mantém o debuff se ainda tiver rodadas restantes
+            });
+    
+            return {
+                ...combatente,
+                status: debuffsAtualizados // Atualiza os debuffs do combatente
+            };
+        });
     };
 
     const reiniciarCombate = () => {
