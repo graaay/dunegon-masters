@@ -83,7 +83,11 @@ export const FloatingCombatentes = styled.div`
     }
 `;
 
-export const ColunasMenoresCombat = styled.th`
+export const ColunasMenoresCombatTh = styled.th`
+    width: 5.625rem;
+`;
+
+export const ColunasMenoresCombatTd = styled.td`
     width: 5.625rem;
 `;
 

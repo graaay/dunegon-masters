@@ -52,6 +52,10 @@ interface Combatente {
     iniciativa: number;
     vida: number;
     status: Array<Condicao>;
+    ca?: number;
+    mana?: number;
+    percepcaoPassiva?: number;
+    sanidade?: number;
 }
 
 interface Combate {

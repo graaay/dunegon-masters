@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Divider, InputFloatingLabel, Modal, Select, SliderCheckbox } from '../../components/index'
-import { TurnoWrapper, Button, Input, TableCombat, ColunasMenoresCombat, FloatingCombatentes, CondicoesChip, CondicoesWaraper, DividerWrapper } from './styles'
+import { TurnoWrapper, Button, Input, TableCombat, ColunasMenoresCombatTh, ColunasMenoresCombatTd, FloatingCombatentes, CondicoesChip, CondicoesWaraper, DividerWrapper } from './styles'
 import { SlidersHorizontal, List, X, PlusMinus, ArrowCounterClockwise, Plus, Minus, Timer } from "phosphor-react";
 import { Combatente, Combate, Mesa, Personagem, Condicao, Sistema } from '../../services/types';
 import { sistemas } from '../../services/systens';
@@ -38,12 +38,26 @@ function Combat() {
     const [selectedPlayer, setSelectedPlayer] = useState<String>('');
     const [isModalConfigOpen, setIsModalConfigOpen] = useState(false);
     const [config, setConfig] = useState({
-        exibirCA: false,
+        exibirCa: false,
         exibirSanidade: false,
         exibirPercepcao: false,
         exibirDano: false,
         exibirMana: false
     });
+
+    const { control, getValues, setValue } = useForm({
+        // exibirCa: false,
+        // exibirSanidade: false,
+        // exibirPercepcao: false,
+        // exibirDano: false,
+        // exibirMana: false
+    }); // Formulário para o controle do formulario das configurações
+    
+    const handleCheckboxChange = (fieldName: string) => {
+        const value = getValues(fieldName);
+        setValue(fieldName, !value);
+    };
+    
 
     useEffect(() => {
 
@@ -66,9 +80,45 @@ function Combat() {
         if (mesaId) loadMesa();
     }, []);
 
+    
+    function isEquivalent(a: any, b: any): boolean {
+        
+        const aProps = Object.getOwnPropertyNames(a);
+        const bProps = Object.getOwnPropertyNames(b);
+    
+        
+        if (aProps.length != bProps.length) {
+            return false;
+        }
+    
+        for (let i = 0; i < aProps.length; i++) {
+            const propName = aProps[i];
+    
+            if (a[propName] !== b[propName]) {
+                return false;
+            }
+        }
+    
+        return true;
+    }
+
+
     useEffect(() => {
-        console.log('use', config);
-    }, [config])
+        const validateConfig = getValues();
+        const configCofigurated = {
+            exibirCa: validateConfig.exibirCa ?? false,
+            exibirSanidade: validateConfig.exibirSanidade ?? false,
+            exibirPercepcao: validateConfig.exibirPercepcao ?? false,
+            exibirDano: validateConfig.exibirDano ?? false,
+            exibirMana: validateConfig.exibirMana ?? false
+        }
+
+        if (!isEquivalent(configCofigurated, config)) {
+            setConfig(configCofigurated)
+        }
+
+    }, [isModalConfigOpen]);
+
 
     const handleChangeCombatente = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -78,7 +128,7 @@ function Combat() {
         }));
     };
 
-    const handleInputChange = (index: number, field: 'iniciativa' | 'vida', value: number) => {
+    const handleInputChange = (index: number, field: 'iniciativa' | 'vida' | 'mana' | 'ca' | 'percepcaoPassiva' | 'sanidade', value: number) => {
         setCombateOrder(prevState => {
             const newState = [...prevState];
             const combatente = { ...newState[index] };
@@ -94,18 +144,9 @@ function Combat() {
         setSelectedPlayer(personagem.id);
     };
 
-    const closeModal = (modal?: string, values?: {}) => {
+    const closeModal = () => {
         setIsModalOpen(false);
         setIsModalConfigOpen(false);
-        if (modal ==='config' && values) {
-            setConfig({
-                exibirCA: 'exibirCA' in values ? values.exibirCA as boolean : false,
-                exibirSanidade: 'exibirSanidade' in values ? values.exibirSanidade as boolean : false,
-                exibirPercepcao: 'exibirPercepcao' in values ? values.exibirPercepcao as boolean : false,
-                exibirDano: 'exibirDano' in values ? values.exibirDano as boolean : false,
-                exibirMana: 'exibirMana' in values ? values.exibirMana as boolean : false
-            });
-        }
     };
 
     const ordenarPorIniciativa = () => {
@@ -131,9 +172,7 @@ function Combat() {
     const adicionarAoCombate = () => {
         let aux: Array<Combatente> = [...combateOrder];
         const teste = { ...combatente, id: uuidv5(combatente.nome + String(combateOrder.length), namespace) }
-        console.log('entrou aqui', teste);
         aux.push(teste);
-        console.log(aux);
         setCombateOrder(aux);
         resetCombateForm();
     }
@@ -147,7 +186,11 @@ function Combat() {
             iniciativa: 0,
             nome: (count > 0 ? personagem.nome + ' ' + String(count + 1) : personagem.nome),
             status: [],
-            vida: personagem.status.vida!
+            vida: personagem.status.vida!,
+            ca: personagem.status?.ca,
+            sanidade: personagem.status?.sanidade,
+            percepcaoPassiva: personagem.status?.percepcaoPassiva,
+            mana: personagem.status?.mana,
         }
 
         let aux: Array<Combatente> = [...combateOrder];
@@ -278,7 +321,6 @@ function Combat() {
     }
 
     const DisplayPersonagens: React.FC<DisplayPersonagensProps> = () => {
-        console.log(mesa?.personagens)
         if (mesa?.personagens?.length > 0) {
             return (
                 <div className="grid">
@@ -501,13 +543,7 @@ function Combat() {
     };
 
     const ConfiguracoesModal: React.FC = () => {
-        const { control, getValues, setValue } = useForm();
-    
-        const handleCheckboxChange = (fieldName: string) => {
-            const value = getValues(fieldName);
-            setValue(fieldName, !value);
-        };
-    
+        
         return (
             <>
                 <h3 style={{textAlign: 'center'}}>
@@ -524,7 +560,7 @@ function Combat() {
                         <div className='col-12'>
                             <DividerWrapper>
                                 <label>CA no combate</label>
-                                <SliderCheckbox name="exibirCA" control={control} onChange={() => handleCheckboxChange('exibirCA')} />
+                                <SliderCheckbox name="exibirCa" control={control} onChange={() => handleCheckboxChange('exibirCa')} />
                             </DividerWrapper>
                             <Divider marginTop='0.5rem' color='transparent' />
                         </div>
@@ -685,10 +721,24 @@ function Combat() {
                                             <tr>
                                                 <th style={{ width: '1.875rem' }}>  </th>
                                                 <th style={{ width: '13rem' }}> Nome </th>
-                                                <ColunasMenoresCombat> Vida </ColunasMenoresCombat>
-                                                <ColunasMenoresCombat> Iniciativa </ColunasMenoresCombat>
-                                                {config.exibirCA && 
-                                                    <th> CA </th>
+                                                <ColunasMenoresCombatTh> Vida </ColunasMenoresCombatTh>
+                                                
+                                                {config.exibirMana && 
+                                                    <ColunasMenoresCombatTh> Mana </ColunasMenoresCombatTh>
+                                                }
+
+                                                <ColunasMenoresCombatTh> Iniciativa </ColunasMenoresCombatTh>
+                                                
+                                                {config.exibirCa && 
+                                                    <ColunasMenoresCombatTh> CA </ColunasMenoresCombatTh>
+                                                }
+
+                                                {config.exibirSanidade && 
+                                                    <ColunasMenoresCombatTh> Sanidade </ColunasMenoresCombatTh>
+                                                }
+
+                                                {config.exibirPercepcao && 
+                                                    <ColunasMenoresCombatTh> Percepção </ColunasMenoresCombatTh>
                                                 }
                                                 <th> Status </th>
                                                 <th style={{ width: '3.4rem' }}>  </th>
@@ -713,7 +763,7 @@ function Combat() {
                                                                     <List size={'1.6rem'} />
                                                                 </td>
                                                                 <td style={{ width: '13rem' }}> {item.nome} </td>
-                                                                <td style={{ width: '5.625rem' }}>
+                                                                <ColunasMenoresCombatTd>
                                                                     <Input
                                                                         type='number'
                                                                         name='vida'
@@ -721,8 +771,21 @@ function Combat() {
                                                                         borderColor='#7a7a7a'
                                                                         onChange={(e) => handleInputChange(index, 'vida', Number(e.target.value))}
                                                                     />
-                                                                </td>
-                                                                <td style={{ width: '5.625rem' }}>
+                                                                </ColunasMenoresCombatTd>
+
+                                                                {config.exibirMana && 
+                                                                    <ColunasMenoresCombatTd>
+                                                                        <Input
+                                                                            type='number'
+                                                                            name='mana'
+                                                                            value={item.mana}
+                                                                            borderColor='#7a7a7a'
+                                                                            onChange={(e) => handleInputChange(index, 'mana', Number(e.target.value))}
+                                                                        />
+                                                                    </ColunasMenoresCombatTd>
+                                                                }
+
+                                                                <ColunasMenoresCombatTd>
                                                                     <Input
                                                                         type='number'
                                                                         name='iniciativa'
@@ -730,7 +793,43 @@ function Combat() {
                                                                         borderColor='#7a7a7a'
                                                                         onChange={(e) => handleInputChange(index, 'iniciativa', Number(e.target.value))}
                                                                     />
-                                                                </td>
+                                                                </ColunasMenoresCombatTd>
+
+                                                                {config.exibirCa && 
+                                                                    <ColunasMenoresCombatTd>
+                                                                        <Input
+                                                                            type='number'
+                                                                            name='ca'
+                                                                            value={item.ca}
+                                                                            borderColor='#7a7a7a'
+                                                                            onChange={(e) => handleInputChange(index, 'ca', Number(e.target.value))}
+                                                                        />
+                                                                    </ColunasMenoresCombatTd>
+                                                                }
+
+                                                                {config.exibirSanidade && 
+                                                                    <ColunasMenoresCombatTd>
+                                                                        <Input
+                                                                            type='number'
+                                                                            name='sanidade'
+                                                                            value={item.sanidade}
+                                                                            borderColor='#7a7a7a'
+                                                                            onChange={(e) => handleInputChange(index, 'sanidade', Number(e.target.value))}
+                                                                        />
+                                                                    </ColunasMenoresCombatTd>
+                                                                }
+
+                                                                {config.exibirPercepcao && 
+                                                                    <ColunasMenoresCombatTd>
+                                                                        <Input
+                                                                            type='number'
+                                                                            name='percepcaoPassiva'
+                                                                            value={item.percepcaoPassiva}
+                                                                            borderColor='#7a7a7a'
+                                                                            onChange={(e) => handleInputChange(index, 'percepcaoPassiva', Number(e.target.value))}
+                                                                        />
+                                                                    </ColunasMenoresCombatTd>
+                                                                }
                                                                 <td>
                                                                     <div style={{ display: 'flex', width: '100%', gap: '1rem' }}>
                                                                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', width: '90%', flexDirection: 'row' }}>
