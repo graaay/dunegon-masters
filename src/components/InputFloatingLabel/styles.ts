@@ -51,6 +51,6 @@ export const InputFloatingLabel = styled.div<InputProps>`
     & > input.filled ~ label {
         transform: translateY(-1.5rem);
         font-size: 1rem;
-        color: ${(props) => props.focusLabelColor || '#ffe600cc'};
+        color: ${(props) => props.focusLabelColor || '#ffe600'};
     }
 `;

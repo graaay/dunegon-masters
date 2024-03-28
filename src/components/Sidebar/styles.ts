@@ -48,12 +48,12 @@ export const StyledNavLink = styled(NavLink)`
     }
 
     &.active {
-        background-color: #ffe600cc;
+        background-color: #ffe600;
         color: black;
     }
 
     &:hover.active {
-        background-color: #ffe600cc;
+        background-color: #ffe600;
         color: black;
     }
 `;

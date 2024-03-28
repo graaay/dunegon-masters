@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ImageRadioButtons, InputFloatingLabel, /*Button*/ SliderCheckbox } from '../../../components/index'
+import { ImageRadioButtons, InputFloatingLabel, Button, SliderCheckbox, Divider } from '../../../components/index'
 import { sistemas } from '../../../services/systens'
-import { MainTableForm, StyledForm, SaveButton, StartButton, CreateButton, CardTables, Divider, Button } from './styles';
+import { MainTableForm, StyledForm, CardTables  } from './styles';
 import { FloppyDisk, Sword, User, Note,  Heart, Eye } from "phosphor-react";
 import { Mesa, Personagem, Sistema } from '../../../services/types';
 import { fetchMesaById, editMesa, addMesa } from '../../../services/api';
@@ -143,15 +143,15 @@ function TableForm() {
                         </div>
                         {/* Outros FormGroup e elementos */}
                         <div style={{display: "flex", gap: "1rem"}}>
-                            <SaveButton onClick={handleSubmit} type='button'> 
-                                <FloppyDisk size={25}/> 
+                            <Button onClick={handleSubmit} type='button' backgroundColor='#0073ff' fontSize='1.3rem'> 
+                                <FloppyDisk size={'1.8rem'}/> 
                                 { mesaId && "Editar" } 
                                 { !mesaId && "Salvar" } 
-                            </SaveButton>
+                            </Button>
                             { mesaId &&
                                 <>
-                                    <StartButton onClick={goForBatle}> <Sword size={25}/> Iniciar </StartButton>
-                                    <CreateButton onClick={goForCharacters}> <User size={25}/> Cadastrar </CreateButton>
+                                    <Button onClick={goForBatle} backgroundColor='#00ff008f' fontSize='1.3rem'> <Sword size={'1.8rem'}/> Iniciar </Button>
+                                    <Button onClick={goForCharacters} backgroundColor='#6767678f' fontSize='1.3rem'> <User size={'1.8rem'}/> Cadastrar </Button>
                                 </>
                             }
                         </div>

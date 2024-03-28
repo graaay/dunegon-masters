@@ -14,7 +14,7 @@ export const TurnoWrapper = styled.div<TurnoWrapperProps>`
     border-radius: 5px;
 
     h2 {
-        color: #ffe600cc;
+        color: #ffe600;
     }
 `;
 
@@ -50,7 +50,7 @@ export const TableCombat = styled.table`
     }
 
     .player-atual {
-        background-color: #ffe600cc;
+        background-color: #ffe600;
         color: black;
         font-weight: 600;
         font-size: 18px;
@@ -78,7 +78,7 @@ export const FloatingCombatentes = styled.div`
         h1, h3 {
             /* text-align: center; */
             font-weight: 500;
-            color: #ffe600cc;
+            color: #ffe600;
         }
     }
 `;

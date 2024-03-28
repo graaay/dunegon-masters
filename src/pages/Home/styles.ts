@@ -25,7 +25,7 @@ export const TitleApresentation = styled.h1`
 `;
 
 export const DestaqueFontHome = styled.h1`
-    color: #ffe600cc;
+    color: #ffe600;
     letter-spacing: 2px;
 `;
 
@@ -53,7 +53,7 @@ export const CardHomeApresentation = styled.div`
 export const FloatingCardApresentation = styled.div`
     color: black;
     height: 11rem;
-    background-color: #ffe600cc;
+    background-color: #ffe600;
     box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.486);
 `;
 

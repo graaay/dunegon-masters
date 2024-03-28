@@ -37,6 +37,13 @@ function Combat() {
     const namespace = uuidv4();
     const [selectedPlayer, setSelectedPlayer] = useState<String>('');
     const [isModalConfigOpen, setIsModalConfigOpen] = useState(false);
+    const [config, setConfig] = useState({
+        exibirCA: false,
+        exibirSanidade: false,
+        exibirPercepcao: false,
+        exibirDano: false,
+        exibirMana: false
+    });
 
     useEffect(() => {
 
@@ -59,6 +66,9 @@ function Combat() {
         if (mesaId) loadMesa();
     }, []);
 
+    useEffect(() => {
+        console.log('use', config);
+    }, [config])
 
     const handleChangeCombatente = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -84,9 +94,18 @@ function Combat() {
         setSelectedPlayer(personagem.id);
     };
 
-    const closeModal = () => {
+    const closeModal = (modal?: string, values?: {}) => {
         setIsModalOpen(false);
         setIsModalConfigOpen(false);
+        if (modal ==='config' && values) {
+            setConfig({
+                exibirCA: 'exibirCA' in values ? values.exibirCA as boolean : false,
+                exibirSanidade: 'exibirSanidade' in values ? values.exibirSanidade as boolean : false,
+                exibirPercepcao: 'exibirPercepcao' in values ? values.exibirPercepcao as boolean : false,
+                exibirDano: 'exibirDano' in values ? values.exibirDano as boolean : false,
+                exibirMana: 'exibirMana' in values ? values.exibirMana as boolean : false
+            });
+        }
     };
 
     const ordenarPorIniciativa = () => {
@@ -231,7 +250,7 @@ function Combat() {
                     body{ font-family: Arial; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: #272727; }
                     div { display: block; }
                     h1 { box-shadow: 0 0 10px rgba(0, 0, 0, 0.616); width: 100%; text-align: center; padding: 0.5rem; border-radius: 5px; background-color: #404040; margin-top: 2rem; }
-                    h1 > b { color: #ffe600cc; transform: scale(1.1); }
+                    h1 > b { color: #ffe600; transform: scale(1.1); }
                     h2 { width: 100%; text-align: center; padding: 0 0.5rem; margin-top: 2rem; }
                     span { padding: 0.6rem; border: 1px solid rgb(163, 163, 163); border-radius: 5px; background-color: #363636; width: 100%; display: block; text-align: center; margin-top: 2rem; }
                 </style>
@@ -294,7 +313,7 @@ function Combat() {
                                 <h3> {personagem.status.vida ?? ''} </h3>
                             </div>
                             <div className='col-6'>
-                                <Button backgroundColor='#ffe600cc' color='black' onClick={() => adicionarAoCombateExistentes(personagem)}> Combate </Button>
+                                <Button backgroundColor='#ffe600' color='black' onClick={() => adicionarAoCombateExistentes(personagem)}> Combate </Button>
                             </div>
                             <div className='col-6'>
                                 <Button backgroundColor='#0261de' color='white' onClick={() => abrirFicha(personagem)}> Abrir ficha </Button>
@@ -418,7 +437,7 @@ function Combat() {
                                                 <td> {item.label} </td>
                                                 <td style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}> 
                                                     <Button
-                                                        backgroundColor='#ffe600cc'
+                                                        backgroundColor='#ffe600'
                                                         padding='0.4rem 0.4rem 0.4rem 0.6rem;'
                                                         borderRadius='50% 0px 0px 50%' 
                                                         width='auto'
@@ -433,7 +452,7 @@ function Combat() {
                                                         {item.rodadas  ?? 'Até ser removido' } 
                                                     </span>
                                                     <Button
-                                                        backgroundColor='#ffe600cc'
+                                                        backgroundColor='#ffe600'
                                                         padding='0.4rem 0.6rem 0.4rem 0.4rem;'
                                                         borderRadius='0px 50% 50% 0px' 
                                                         width='auto'
@@ -487,7 +506,6 @@ function Combat() {
         const handleCheckboxChange = (fieldName: string) => {
             const value = getValues(fieldName);
             setValue(fieldName, !value);
-            console.log(getValues());
         };
     
         return (
@@ -563,7 +581,7 @@ function Combat() {
                         fontSize='1rem'
                         width='auto'
                         padding='0.2rem 0.4rem'
-                        backgroundColor='#ffe600cc'
+                        backgroundColor='#ffe600'
                         color='black'
                         onClick={() => atualizarTurno()}
                     >
@@ -582,7 +600,7 @@ function Combat() {
                         <Button
                             width='auto'
                             borderRadius='50%'
-                            backgroundColor='#ffe600cc'
+                            backgroundColor='#ffe600'
                             color='black'
                             padding='0.5rem 0.5rem;'
                             onClick={() => setIsModalConfigOpen(true)}
@@ -596,7 +614,7 @@ function Combat() {
                         <Button
                             width='auto'
                             borderRadius='50%'
-                            backgroundColor='#ffe600cc'
+                            backgroundColor='#ffe600'
                             color='black'
                             padding='0.5rem 0.5rem;'
                             onClick={reiniciarCombate}
@@ -644,7 +662,7 @@ function Combat() {
                 <div className='col-3'>
                     <Button
                         width='auto'
-                        backgroundColor='#ffe600cc'
+                        backgroundColor='#ffe600'
                         color='black'
                         padding='0.5rem 0.8rem;'
                         onClick={adicionarAoCombate}
@@ -669,6 +687,9 @@ function Combat() {
                                                 <th style={{ width: '13rem' }}> Nome </th>
                                                 <ColunasMenoresCombat> Vida </ColunasMenoresCombat>
                                                 <ColunasMenoresCombat> Iniciativa </ColunasMenoresCombat>
+                                                {config.exibirCA && 
+                                                    <th> CA </th>
+                                                }
                                                 <th> Status </th>
                                                 <th style={{ width: '3.4rem' }}>  </th>
                                             </tr>
@@ -729,7 +750,7 @@ function Combat() {
                                                                         </div>
                                                                         <div style={{ width: '10%' }}>
                                                                             <Button
-                                                                                backgroundColor='#ffe600cc'
+                                                                                backgroundColor='#ffe600'
                                                                                 color='black'
                                                                                 padding='0.5rem 0.6rem'
                                                                                 width='auto'
@@ -783,7 +804,7 @@ function Combat() {
                         backgroundColor='#4d4d4d'
                         padding='0.5rem 0.8rem'
                         color='white'
-                        hoverBackgroundColor='#ffe600cc'
+                        hoverBackgroundColor='#ffe600'
                         hoverColor='black'
                         onClick={ordenarPorIniciativa}
                     >
@@ -805,7 +826,7 @@ function Combat() {
             </Modal>
 
             <Modal isOpen={isModalConfigOpen} onClose={closeModal} width='35rem'>
-                <ConfiguracoesModal />
+                <ConfiguracoesModal/>
             </Modal>
 
         </>

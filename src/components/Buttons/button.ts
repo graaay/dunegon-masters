@@ -31,7 +31,7 @@ export const Button = styled.button<ButtonPropos>`
     font-family: 'Montserrat',sans-serif;
     transition: 0.4s;
     border: ${(props) => props.border || ''};
-
+    font-weight: 500;
     &:hover {
         filter: brightness(0.8);
         background-color: ${(props) => props.hoverBackgroundColor || props.backgroundColor || '#9f9f9f'};
