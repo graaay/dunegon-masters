@@ -22,9 +22,15 @@ export const CardTables = styled.div`
     border-radius: 0.3rem;
     box-shadow: 0px 0px 3px #1c1c1ccc;
     cursor: pointer;
-
+    overflow: hidden;
     .table-form-div-wrapper {
         padding: 0.5rem 0.8rem;
         display: grid;
+
+        .head-character {
+            display: flex;
+            min-width: 100%;
+            justify-content: space-between;
+        }
     }
 `;

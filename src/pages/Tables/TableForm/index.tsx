@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ImageRadioButtons, InputFloatingLabel, Button, SliderCheckbox, Divider } from '../../../components/index'
 import { sistemas } from '../../../services/systens'
 import { MainTableForm, StyledForm, CardTables  } from './styles';
-import { FloppyDisk, Sword, User, Note,  Heart, Eye } from "phosphor-react";
+import { FloppyDisk, Sword, User, Note,  Heart, Eye, Pencil } from "phosphor-react";
 import { Mesa, Personagem, Sistema } from '../../../services/types';
 import { fetchMesaById, editMesa, addMesa } from '../../../services/api';
 
@@ -95,7 +95,11 @@ function TableForm() {
     }
 
     const goForCharacters = () => {
-        navigate(`/Characters/${mesaForm.id}`);
+        navigate(`/Characters/${mesaForm.id}W`);
+    }
+
+    const goForCharactersEdit = (personagemId: string) => {
+        navigate(`/Characters/${mesaForm.id}/${personagemId}`);
     }
 
     const montaObjeto = (sistema: Sistema): Mesa => {
@@ -171,7 +175,12 @@ function TableForm() {
                                                     <div className="col-4">
                                                         <CardTables>
                                                             <div className='table-form-div-wrapper'>
-                                                                <h1> {personagem.nome} </h1>
+                                                                <div className='head-character'>
+                                                                    <h1> 
+                                                                        {personagem.nome} 
+                                                                    </h1>
+                                                                    <Button backgroundColor='#057df5' borderRadius='50%' width='auto' padding='0.3rem'> <Pencil size={'1.4rem'}/> </Button>
+                                                                </div>
                                                             </div>
                                                         </CardTables>
                                                     </div>
