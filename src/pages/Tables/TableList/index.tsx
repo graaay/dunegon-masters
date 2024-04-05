@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchMesas } from '../../../services/api';
 import { Mesa } from '../../../services/types';
 import { sistemas } from '../../../services/systens';
+import { useAuth } from '../../../contexts/AuthContext';
 
 interface ActiveButtonProps {
     active: boolean;
@@ -14,6 +15,7 @@ interface ActiveButtonProps {
 function TablesList() {
 
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     const [mesas, setMesas] = useState<Array<Mesa>>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,7 +31,7 @@ function TablesList() {
 
     useEffect(() => {
         const loadMesas = async () => {
-            const fetchedMesas = await fetchMesas();
+            const fetchedMesas = await fetchMesas(user!.token!);
             if (fetchedMesas) setMesas(fetchedMesas);
             else console.error('Falha ao buscar mesas');
         };

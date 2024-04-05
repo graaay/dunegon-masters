@@ -5,27 +5,39 @@ import { sistemas } from '../../../services/systens'
 import { MainTableForm, StyledForm, CardTables  } from './styles';
 import { FloppyDisk, Sword, User, Note,  Heart, Eye, Pencil } from "phosphor-react";
 import { Mesa, Personagem, Sistema } from '../../../services/types';
-import { fetchMesaById, editMesa, addMesa } from '../../../services/api';
+import { fetchMesaById, editMesa, addMesa, fetchPersonagens } from '../../../services/api';
+import { useAuth } from '../../../contexts/AuthContext';
 
 function TableForm() {
 
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     const { mesaId } = useParams<string>();
     const [mesaForm, setMesaForm] = useState<Mesa>({} as Mesa);
     const [loading, setLoading] = useState<boolean>(false);
+    const [personagens, setPersonagens] = useState<Array<Personagem>>([])
 
     useEffect(() => {
         const loadMesa = async () => {
             setLoading(true);
-            const response = await fetchMesaById(mesaId!);
+            const response = await fetchMesaById(mesaId!, user!.token!);
             const mesa: Mesa = response[0];
-            if (response) setMesaForm(mesa);
-            else console.error('Falha ao buscar mesas');
+            if (response) {
+                setMesaForm(mesa);
+                loadPersonagens();
+            } 
+            else {
+                console.error('Falha ao buscar mesas');
+            }
             setLoading(false);
             console.log(mesa);
-            // mesa.sistema
         };
+
+        const loadPersonagens = async () => {
+            const responsePersonagens = await fetchPersonagens(mesaId!, user!.token!);
+            setPersonagens(responsePersonagens);
+        }
     
         if (mesaId) loadMesa();
     }, []);
@@ -72,7 +84,8 @@ function TableForm() {
 
         if (!mesaForm.id) {
             const response = await addMesa(
-                montaObjeto(mesaForm.sistema)
+                montaObjeto(mesaForm.sistema),
+                user!.token!
             );
             navigate(`/Tables/edit/${response.id}`);
         }
@@ -80,7 +93,8 @@ function TableForm() {
         if (mesaForm.id) {
             reassignment(
                 await editMesa(
-                    mesaForm.id, montaObjeto(mesaForm.sistema)
+                    mesaForm.id, montaObjeto(mesaForm.sistema),
+                    user!.token!
                 )
             );
         }
@@ -161,7 +175,7 @@ function TableForm() {
                         </div>
                         {/* Botões Start e Create */}
                     </StyledForm>
-                    { mesaForm?.personagens?.length > 0 &&
+                    { personagens?.length > 0 &&
                         <div>
                             <Divider marginTop='2rem' marginBottom='1rem'/>
                             <div style={{gap: '1rem', display: 'grid'}}>
@@ -169,7 +183,7 @@ function TableForm() {
                                 <h4> Players </h4>
                                 <div className='grid'>
                                     {
-                                        mesaForm.personagens.map((personagem: Personagem) => {
+                                        personagens.map((personagem: Personagem) => {
                                             if ( personagem.tipo === 'Player') {
                                                 return (
                                                     <div className="col-4">
@@ -200,7 +214,7 @@ function TableForm() {
                                 <h4> NPC's </h4>
                                 <div className='grid'>
                                     {
-                                        mesaForm.personagens.map((personagem: Personagem) => {
+                                        personagens.map((personagem: Personagem) => {
                                            if ( personagem.tipo === 'NPC') {
                                                 return (
                                                     <div className="col-4">
@@ -251,7 +265,7 @@ function TableForm() {
                                 <h4> Monstros </h4>
                                 <div className='grid'>
                                     {
-                                        mesaForm.personagens.map((personagem: Personagem) => {
+                                        personagens.map((personagem: Personagem) => {
                                             if ( personagem.tipo === 'Monstro') {
                                                 return (
                                                     <div className="col-4">

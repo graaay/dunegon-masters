@@ -33,11 +33,6 @@ function Authentication() {
         navigate(`/Home`);
     }
 
-    // useEffect(() => {
-    //     console.log('useEffect', user);
-    //     if (user) goForHome();
-    // }, [user])
-
     useEffect(() => {
         if (accessToken) {
             const fetchGoogleUserInfo = async () => {

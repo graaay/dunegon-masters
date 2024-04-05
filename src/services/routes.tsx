@@ -7,6 +7,7 @@ import TablesList from '../pages/Tables/TableList';
 import TablesForm from '../pages/Tables/TableForm';
 import Authentication from '../pages/Authentication';
 import { useAuth } from '../contexts/AuthContext';
+import { AuthService }  from './authenticate';
 
 const AuthenticatedRoutes = () => (
     <div style={{ display: 'flex' }}>
@@ -40,15 +41,18 @@ const NoAuthenticatedRoutes = () => {
 };
 
 const Routers = () => {
-    const { user } = useAuth();
+    const { user, getToken } = useAuth();
+    console.log(getToken());
     return (
         <>
-            <Routes>
+            <AuthService>
+                <Routes>
 
-                {!user ? <Route path="*" element={<NoAuthenticatedRoutes />} /> : null}
-                
-                {user ? <Route path="*" element={<AuthenticatedRoutes />} /> : null}
-            </Routes>
+                    {!user ? <Route path="*" element={<NoAuthenticatedRoutes />} /> : null}
+                    
+                    {user ? <Route path="*" element={<AuthenticatedRoutes />} /> : null}
+                </Routes>
+            </AuthService>
         </>
     )
 }

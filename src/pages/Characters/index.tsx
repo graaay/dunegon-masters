@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Divider, InputFloatingLabel, GlowingButton, Select } from '../../components/index';
-import { Personagem, PersonagemRequest } from '../../services/types';
+import { Personagem } from '../../services/types';
 import { fetchPersonagensById, editPersonagem, addPersonagem } from '../../services/api';
 import { Container } from './styles';
 import { Campfire, Heart, Drop, Eye, ArrowLeft} from "phosphor-react";
+import { useAuth } from '../../contexts/AuthContext';
 
 function CharactersForm() {
 
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     const { mesaId, personagemId } = useParams<string>();
     // const [personagemForm, setPersonagemForm] = useState<Personagem>({} as Personagem);
@@ -31,29 +33,15 @@ function CharactersForm() {
     useEffect(() => {
         const loadCharacter = async () => {
             setLoading(true);
-            const response = await fetchPersonagensById(mesaId!, personagemId!);
+            const response = await fetchPersonagensById(mesaId!, personagemId!, user!.token!);
             const tipoEncontrado = tiposPersonagem.find(tipo => tipo.value === response['tipo']);
-            const tipoCorrespondente: any = tipoEncontrado ? tipoEncontrado : tiposPersonagem[0]; // Defina um valor padrão se não encontrar correspondência
+            const tipoCorrespondente: any = tipoEncontrado ? tipoEncontrado : tiposPersonagem[0];
             const personagem: Personagem = {...response, tipo: tipoCorrespondente};
-            console.log(personagem);
             if (response) setPersonagemForm(personagem);
             else console.error('Falha ao buscar personagem');
             setLoading(false);
         }
-        // const loadCharacter = async () => {
-        //     setLoading(true);
-        //     const response = await fetchPersonagensById(mesaId!, personagemId!);
-        //     const corrige: any = (response ? tiposPersonagem.find(tipo => tipo.value === response['tipo']) : response['tipo']);
-        //     const corrigeOcorrigido: any = {
-        //         name: corrige.name,
-        //         value: corrige.value
-        //     }
-        //     const personagem: Personagem = {...response, tipo: corrigeOcorrigido};
-        //     console.log(personagem)
-        //     if (response) setPersonagemForm(personagem);
-        //     else console.error('Falha ao buscar personagem');
-        //     setLoading(false);
-        // }
+
 
         if (personagemId) loadCharacter();
     }, []);
@@ -94,30 +82,17 @@ function CharactersForm() {
 
     const handleSubmit = async () => {
 
-        const model: PersonagemRequest = {
-            personagem: montaPersonamge(personagemForm),
-            id: mesaId!
-        }
-
-        console.log(model)
 
         if (!personagemForm.id) {
-            await addPersonagem(model);
+            await addPersonagem(montaPersonamge(personagemForm), user!.token!);
             goBack();
         }
     }
 
     const handleDelete = async () => {
 
-        const model: PersonagemRequest = {
-            personagem: montaPersonamge(personagemForm),
-            id: mesaId!
-        }
-
-        console.log(model)
-
         if (!personagemForm.id) {
-            await addPersonagem(model);
+            await addPersonagem(montaPersonamge(personagemForm), user!.token!);
             goBack();
         }
     }

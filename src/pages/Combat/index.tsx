@@ -9,6 +9,7 @@ import { fetchMesaById } from '../../services/api';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { v5 as uuidv5, v4 as uuidv4 } from 'uuid';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface DisplayPersonagensProps {
     tipo: string;
@@ -21,6 +22,7 @@ interface ItemPersonagemProps {
 function Combat() {
 
     const { mesaId } = useParams<string>();
+    const { user } = useAuth();
     const [combateOrder, setCombateOrder] = useState<Array<Combatente>>([]);
     const [combatente, setCombatente] = useState<Combatente>({
         id: '',
@@ -66,7 +68,7 @@ function Combat() {
         }
 
         const loadMesa = async () => {
-            const response = await fetchMesaById(mesaId!);
+            const response = await fetchMesaById(mesaId!, user!.token!);
             const mesaRequest: Mesa = response[0];
             if (response) {
                 setMesa(mesaRequest);

@@ -39,12 +39,10 @@ interface Personagem {
     ficha?: string;
     status: Status;
     statusAtuais?: Status;
+    idMesa?: string;
+    idUser?: string;
 }
 
-interface PersonagemRequest {
-    id: string;
-    personagem: Personagem;
-}
 
 interface Combatente {
     id: string;
@@ -80,4 +78,4 @@ interface User {
 
 
 
-export type { Personagem, Mesa, PersonagemRequest, Status, Combatente, Combate, Sistema, Condicao, LoginForm, User }
+export type { Personagem, Mesa, Status, Combatente, Combate, Sistema, Condicao, LoginForm, User }
