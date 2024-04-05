@@ -31,13 +31,29 @@ function CharactersForm() {
     useEffect(() => {
         const loadCharacter = async () => {
             setLoading(true);
-            const response = await fetchPersonagensById(personagemId!);
-            const personagem: Personagem = response[0];
+            const response = await fetchPersonagensById(mesaId!, personagemId!);
+            const tipoEncontrado = tiposPersonagem.find(tipo => tipo.value === response['tipo']);
+            const tipoCorrespondente: any = tipoEncontrado ? tipoEncontrado : tiposPersonagem[0]; // Defina um valor padrão se não encontrar correspondência
+            const personagem: Personagem = {...response, tipo: tipoCorrespondente};
+            console.log(personagem);
             if (response) setPersonagemForm(personagem);
             else console.error('Falha ao buscar personagem');
             setLoading(false);
-            console.log(personagem);
         }
+        // const loadCharacter = async () => {
+        //     setLoading(true);
+        //     const response = await fetchPersonagensById(mesaId!, personagemId!);
+        //     const corrige: any = (response ? tiposPersonagem.find(tipo => tipo.value === response['tipo']) : response['tipo']);
+        //     const corrigeOcorrigido: any = {
+        //         name: corrige.name,
+        //         value: corrige.value
+        //     }
+        //     const personagem: Personagem = {...response, tipo: corrigeOcorrigido};
+        //     console.log(personagem)
+        //     if (response) setPersonagemForm(personagem);
+        //     else console.error('Falha ao buscar personagem');
+        //     setLoading(false);
+        // }
 
         if (personagemId) loadCharacter();
     }, []);
@@ -87,7 +103,22 @@ function CharactersForm() {
 
         if (!personagemForm.id) {
             await addPersonagem(model);
-            navigate(-1);
+            goBack();
+        }
+    }
+
+    const handleDelete = async () => {
+
+        const model: PersonagemRequest = {
+            personagem: montaPersonamge(personagemForm),
+            id: mesaId!
+        }
+
+        console.log(model)
+
+        if (!personagemForm.id) {
+            await addPersonagem(model);
+            goBack();
         }
     }
 
@@ -147,7 +178,7 @@ function CharactersForm() {
                     /> */}
                     <Select
                         label='Tipo (*)'
-                        options={tiposPersonagem.map(tipo => ({ label: tipo.name, value: tipo.value }))}
+                        options={tiposPersonagem.map(tipo => ({id: tipo.id, label: tipo.name, value: tipo.value }))}
                         onChange={handleChangeTipo}
                         value={personagemForm.tipo}
                     />
@@ -233,19 +264,21 @@ function CharactersForm() {
                         value={personagemForm.status.nd}
                     />
                 </div>
-                <div className='col-12' style={{gap: '1rem'}}>
-                    <GlowingButton onClick={handleSubmit}>
-                        <span className='glowing-txt'>
-                            SA<span className='faulty-letter'>L</span>VAR
-                        </span>
-                    </GlowingButton>
-                    { personagemId &&
-                        <GlowingButton color="hsl(0, 100%, 69.01960784313725%)">
+                <div className='col-12'>
+                    <div style={{gap: '12rem', display: 'flex', minWidth: '100%', justifyContent: 'center', marginTop: '2rem'}}>
+                        <GlowingButton onClick={handleSubmit}>
                             <span className='glowing-txt'>
-                                EXC<span className='faulty-letter'>L</span>UIR
+                                SA<span className='faulty-letter'>L</span>VAR
                             </span>
                         </GlowingButton>
-                    }
+                        { personagemId &&
+                            <GlowingButton color="hsl(0, 100%, 69.01960784313725%)">
+                                <span className='glowing-txt'>
+                                    EXC<span className='faulty-letter'>L</span>UIR
+                                </span>
+                            </GlowingButton>
+                        }
+                    </div>
                 </div>
             </div>
         </Container>

@@ -31,6 +31,13 @@ export const CardTables = styled.div`
             display: flex;
             min-width: 100%;
             justify-content: space-between;
+
+            h1 , h2 {
+                overflow: hidden;
+                max-width: 85%;
+                min-width: 85%;
+                text-overflow: ellipsis;
+            }
         }
     }
 `;

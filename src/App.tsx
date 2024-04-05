@@ -1,38 +1,25 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Sidebar from './components/Sidebar/index';
-import HomePage from './pages/Home/index';
-import Combat from './pages/Combat/index';
-import CharactersForm from './pages/Characters/index';
-import TablesList from './pages/Tables/TableList/index';
-import TablesForm from './pages/Tables/TableForm/index';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
 import GlobalStyle from './App';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { AuthProvider } from './contexts/AuthContext';
+import { Routers } from './services/routes'
 
-
-
+// App Component
 function App() {
+  const clientId = "1044824281549-0rcnflv2sh7r6tvtcat3juju5hqauee2.apps.googleusercontent.com";
+
   return (
     <>
-      <GlobalStyle />
-      <Router>
-        <div style={{ display: 'flex' }}>
-          <Sidebar />
-          <main style={{ flex: 1, padding: '10px' }}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/Combate/:mesaId" element={<HomePage />} />
-
-              {/* <Route path="/Characters" element={<CharactersPage />} /> */}
-              <Route path="/Characters/:mesaId" element={<CharactersForm />} />
-
-              <Route path="/Tables" element={<TablesList />} />
-              <Route path="/Tables/new" element={<TablesForm />} />
-              <Route path="/Tables/edit/:mesaId" element={<TablesForm />} />
-              <Route path="/Combat/:mesaId" element={<Combat />} />
-            </Routes>
-          </main>
-        </div>
-      </Router>
+      <AuthProvider>
+        <GoogleOAuthProvider clientId={clientId}>
+          <GlobalStyle />
+          <Router>
+              <Routers />
+          </Router>
+        </GoogleOAuthProvider>
+      </AuthProvider>
     </>
   );
 }

@@ -63,4 +63,21 @@ interface Combate {
     turno: string;
 }
 
-export type { Personagem, Mesa, PersonagemRequest, Status, Combatente, Combate, Sistema, Condicao }
+interface LoginForm {
+    login: string;
+    password: string;
+    staySignedIn: boolean
+}
+
+interface User {
+    id?: string;
+    name?: string;
+    email?: string;
+    token?: string;
+    password?: string;
+    socialId?: string;
+}
+
+
+
+export type { Personagem, Mesa, PersonagemRequest, Status, Combatente, Combate, Sistema, Condicao, LoginForm, User }

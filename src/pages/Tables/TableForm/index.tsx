@@ -179,7 +179,15 @@ function TableForm() {
                                                                     <h1> 
                                                                         {personagem.nome} 
                                                                     </h1>
-                                                                    <Button backgroundColor='#057df5' borderRadius='50%' width='auto' padding='0.3rem'> <Pencil size={'1.4rem'}/> </Button>
+                                                                    <Button 
+                                                                        backgroundColor='#057df5' 
+                                                                        borderRadius='50%' 
+                                                                        width='auto' 
+                                                                        padding='0.1rem 0.5rem 0.5rem 0.5rem' 
+                                                                        onClick={() => goForCharactersEdit(personagem.id)}
+                                                                    > 
+                                                                        <Pencil size={'1.5rem'}/>
+                                                                    </Button>
                                                                 </div>
                                                             </div>
                                                         </CardTables>
@@ -199,8 +207,21 @@ function TableForm() {
                                                         <CardTables>
                                                             <div className='table-form-div-wrapper'>
                                                                 <div className='grid'>
-                                                                    <div className='col-12'>
-                                                                        <h2>{personagem.nome}</h2>
+                                                                    <div className="col-12">
+                                                                        <div className='head-character'>
+                                                                            <h1> 
+                                                                                {personagem.nome} 
+                                                                            </h1>
+                                                                            <Button 
+                                                                                backgroundColor='#057df5' 
+                                                                                borderRadius='50%' 
+                                                                                width='auto' 
+                                                                                padding='0.1rem 0.5rem 0.5rem 0.5rem' 
+                                                                                onClick={() => goForCharactersEdit(personagem.id)}
+                                                                                > 
+                                                                                <Pencil size={'1.5rem'}/>
+                                                                            </Button>
+                                                                        </div>
                                                                     </div>
                                                                     <Divider color='transparent' marginTop='0.2rem' marginBottom='0.4rem' />
                                                                     <div className='col-4'>
@@ -237,8 +258,21 @@ function TableForm() {
                                                         <CardTables>
                                                             <div className='table-form-div-wrapper'>
                                                                 <div className='grid'>
-                                                                    <div className='col-12'>
-                                                                        <h2>{personagem.nome}</h2>
+                                                                    <div className="col-12">
+                                                                        <div className='head-character'>
+                                                                            <h1> 
+                                                                                {personagem.nome} 
+                                                                            </h1>
+                                                                            <Button 
+                                                                                backgroundColor='#057df5' 
+                                                                                borderRadius='50%' 
+                                                                                width='auto' 
+                                                                                padding='0.1rem 0.5rem 0.5rem 0.5rem' 
+                                                                                // onClick={() => goForCharactersEdit(personagem.id)}
+                                                                                > 
+                                                                                <Pencil size={'1.5rem'}/>
+                                                                            </Button>
+                                                                        </div>
                                                                     </div>
                                                                     <Divider color='transparent' marginTop='0.2rem' marginBottom='0.4rem' />
                                                                     <div className='col-4'>

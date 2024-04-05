@@ -7,5 +7,5 @@ export const Container = styled.div`
     width: 60rem;
     margin: auto;
     flex-direction: column;
-    margin-block: 1rem;
 `;
+
