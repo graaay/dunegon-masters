@@ -8,14 +8,14 @@ import { useAuth } from '../../contexts/AuthContext';
 
 function Sidebar() {
 
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
 
     return (
         <MainContainer>
             <SubContainer>
                 <Header>
                     <LogoImage src={Logo1} alt="Logo"/>
-                    <span> Abner Alexandre</span>
+                    <span> {user?.name}</span>
                 </Header>
                 <Divider marginTop='1rem' marginBottom='1.5rem'/>
                 <nav>

@@ -35,48 +35,54 @@ function Authentication() {
 
     useEffect(() => {
         if (accessToken) {
-            const fetchGoogleUserInfo = async () => {
-                const googleApi = create({
-                    baseURL: 'https://www.googleapis.com',
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
-                
-                const response = await googleApi.get('/oauth2/v2/userinfo');
-    
-                if (response.ok && response.data) {
-                    const {id, email} = response.data as any;
-                    const userLogin: any = await socialLogin({
-                        socialId: id,
-                        email: email
-                    });
-                    login(userLogin);
-                    goForHome();
-                    // const { name, email } = response.data as any;
-                    // const register = await registerUser({
-                    //     name: name!, 
-                    //     email: email!,
-                    //     password: 'testeiiiiiiii'
-                    // });
-                    // console.log('registeradi my friend', register);
-                    // {
-                    //     "id": "104757209040136257300",
-                    //     "email": "abneralecs@gmail.com",
-                    //     "verified_email": true,
-                    //     "name": "Abner Alexandre",
-                    //     "given_name": "Abner",
-                    //     "family_name": "Alexandre",
-                    //     "picture": "https://lh3.googleusercontent.com/a/ACg8ocKbLxnxnXIuYPgAlbiwhhC9ZvslflDufUFbssJhVCYDtL-Bx5pv=s96-c",
-                    //     "locale": "pt-BR"
-                    // }
-                     
-                } else {
-                    console.error('Error fetching user info:', response.problem);
-                }
-            };
-    
-            fetchGoogleUserInfo();
+            fetchUserInfo();
         }
     }, [accessToken]);
+
+    const fetchUserInfo = async () => {
+        const googleUserInfo = await getGoogleUserInfo();
+        
+        if (googleUserInfo) {
+            const {id, email, name} = googleUserInfo;
+            const userLoginResponse: any = await handleSocialLogin(id, email);
+            
+            if (userLoginResponse?.message === 'Prosseguir para cadastramento.') {
+                const newUser = await handleRegisterUser(email, name, id);
+                login(newUser);
+            } else {
+                login(userLoginResponse);
+            }
+            goForHome();
+        } else {
+            console.error('Erro ao buscar informações do usuário:', googleUserInfo);
+        }
+    };
+
+    const getGoogleUserInfo = async (): Promise<any> => {
+        const googleApi = create({
+            baseURL: 'https://www.googleapis.com',
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        
+        const response = await googleApi.get('/oauth2/v2/userinfo');
+        return response.ok && response.data ? response.data : null;
+    };
+
+    const handleSocialLogin = async (id: string, email: string): Promise<any> => {
+        return await socialLogin({
+            socialId: id,
+            email: email
+        });
+    };
+
+    const handleRegisterUser = async (email: string, name: string, id: string) => {
+        return await registerUser({
+            email: email,
+            name: name,
+            socialId: id,
+            password: 'Chuaaaa'
+        });
+    };
 
     const handleCheckboxChange = () => {
         const value = getValues('staySignedIn');
